@@ -14,7 +14,7 @@ def load_model():
 model = load_model()
 
 rtc_config = RTCConfiguration(
-    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"}]}
+    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
 )
 
 class YOLOv8Transformer(VideoTransformerBase):
