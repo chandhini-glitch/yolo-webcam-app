@@ -7,38 +7,22 @@ import numpy as np
 st.set_page_config(page_title="YOLOv8 Live Detection", layout="centered")
 st.title("📷 Real-Time Object Detection with YOLOv8")
 
-st.info("Click DONE after selecting webcam input to start detection.")
-
 @st.cache_resource
 def load_model():
-    try:
-        model = YOLO("yolov8n.pt")  # Use Nano version (smallest)
-        st.success("✅ Model loaded successfully!")
-        return model
-    except Exception as e:
-        st.error(f"❌ Model loading failed: {e}")
-        return None
+    return YOLO("yolov8n.pt")  # Make sure model file is downloaded automatically
 
 model = load_model()
 
 rtc_config = RTCConfiguration(
-    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"}]}
 )
 
 class YOLOv8Transformer(VideoTransformerBase):
     def transform(self, frame):
         img = frame.to_ndarray(format="bgr24")
-
-        if model is not None:
-            try:
-                results = model(img)
-                annotated_frame = results[0].plot()
-                return annotated_frame
-            except Exception as e:
-                st.error(f"Detection error: {e}")
-                return img
-        else:
-            return img
+        results = model(img)
+        annotated_frame = results[0].plot()
+        return annotated_frame
 
 webrtc_streamer(
     key="yolov8-stream",
@@ -46,5 +30,6 @@ webrtc_streamer(
     rtc_configuration=rtc_config,
     media_stream_constraints={"video": True, "audio": False},
 )
+
 
 
